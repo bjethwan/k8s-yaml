@@ -1,0 +1,61 @@
+apiVersion: couchbase.com/v1
+kind: CouchbaseCluster
+metadata:
+  name: cb-demo1
+spec:
+  baseImage: couchbase/server
+  version: enterprise-5.5.2
+  authSecret: cb-example-auth
+  disableBucketManagement: true
+  exposeAdminConsole: true
+  adminConsoleServiceType: NodePort
+  adminConsoleServices:
+    - data
+  securityContext:
+    runAsUser: 1000
+    runAsNonRoot: true
+    fsGroup: 1000
+  cluster:
+    dataServiceMemoryQuota: 1024
+    indexServiceMemoryQuota: 1024
+    searchServiceMemoryQuota: 1024
+    eventingServiceMemoryQuota: 1024
+    analyticsServiceMemoryQuota: 1024
+    indexStorageSetting: memory_optimized
+    autoFailoverTimeout: 120
+    autoFailoverMaxCount: 3
+    autoFailoverOnDataDiskIssues: true
+    autoFailoverOnDataDiskIssuesTimePeriod: 120
+    autoFailoverServerGroup: false
+  serverGroups:
+    - us-west-1a
+    - us-west-1b
+  servers:
+    - name: us-west-1a
+      size: 1
+      services:
+        - data
+        - index
+        - query
+      serverGroups:
+        - us-west-1a
+      pod:
+        volumeMounts:
+          default: us-west-1a
+          data:  us-west-1a
+          index: us-west-1a
+  volumeClaimTemplates:
+    - metadata:
+        name: us-west-1a
+      spec:
+        storageClassName: "us-west-1a"
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: us-west-1b
+      spec:
+        storageClassName: "us-west-1b"
+        resources:
+          requests:
+            storage: 5Gi

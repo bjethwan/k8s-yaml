@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cb-twitter-config
+data:
+  application.properties: |
+    TWITTER_CONSUMER_KEY=EPCac2BtfPlmxK0QPDt9hwkao
+    TWITTER_CONSUMER_SECRET=bBfFRF1yWCBIgZlKmbPvbYw9pFfLtB7VGdDe6X4LPay2mg37XZ
+    TWITTER_TOKEN=3190278936-vzc6EaXm7ffltCdDJW9C8kl6K9VauXIkOA6UgDN
+    TWITTER_SECRET=koELnPxSApMBilxv4sG2X9KbOZNHjgN0cy2tvCVwuukDx
+    TWITTER_FILTER=MeToo
+    COUCHBASE_CLUSTER=cb-tweets
+    COUCHBASE_USER=Administrator
+    COUCHBASE_PASSWORD=password
+    COUCHBASE_TWEET_BUCKET=tweets
+
+

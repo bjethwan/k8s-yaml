@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cb-twitter-config
+data:
+  application.properties: |
+    TWITTER_CONSUMER_KEY=<<feed-in-yours>>
+    TWITTER_CONSUMER_SECRET=<<feed-in-yours>>
+    TWITTER_TOKEN=<<feed-in-yours>>
+    TWITTER_SECRET=<<feed-in-yours>>
+    TWITTER_FILTER=<<select-yours-eg-MeToo>>
+    COUCHBASE_CLUSTER=cb-demo1.default.svc.cluster.local
+    COUCHBASE_USER=Administrator
+    COUCHBASE_PASSWORD=password
+    COUCHBASE_TWEET_BUCKET=tweets
+
+

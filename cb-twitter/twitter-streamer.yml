@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: twitter-streamer-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+          app: cb-twitter
+          service: twitter-streamer
+    template:
+      metadata:
+        labels:
+          app: cb-twitter
+          service: twitter-streamer
+      spec:
+        containers:
+        - name: twitter-streamer-container
+          image: quay.io/bjethwan/twitter-streamer:latest
+          ports:
+          - containerPort: 8081
+          volumeMounts:
+          - name: application-config
+            mountPath: "/config"
+            readOnly: true
+        volumes:
+        - name: application-config
+          configMap:
+            name: cb-twitter-config
+            items:
+            - key: application.properties
+              path: application.properties
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: twitter-streamer-svc
+spec:
+    type: NodePort
+    selector:
+      app: cb-twitter
+      service: twitter-streamer
+    ports:
+    - port: 8081
+      protocol: TCP

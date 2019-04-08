@@ -1,0 +1,18 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pillowfight
+spec:
+  template:
+    metadata:
+      name: pillowfight
+    spec:
+      containers:
+      - name: pillowfight
+        image: sequoiatools/pillowfight:v5.0.1
+        workingDir: /
+        command: ["cbc-pillowfight",
+                  "-U", "couchbase://cb-att-in1-0000.cb-att-in1.default.svc/pillow?select_bucket=true",
+                  "--num-items", "60", "--json", "-p", "neha", "-B", "100", "-c", "-1", "-t", "1", "-u", "Administrator", "-P", "password", "-T"]
+      restartPolicy: Never

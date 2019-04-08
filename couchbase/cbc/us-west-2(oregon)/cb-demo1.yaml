@@ -1,0 +1,104 @@
+apiVersion: couchbase.com/v1
+kind: CouchbaseCluster
+metadata:
+  name: cb-dev
+spec:
+  baseImage: couchbase/server
+  version: enterprise-5.5.3
+  authSecret: cb-example-auth
+  antiAffinity: true
+  disableBucketManagement: true
+  exposeAdminConsole: true
+  adminConsoleServices:
+    - data
+  exposedFeatures:
+    - admin
+  securityContext:
+    runAsUser: 1000
+    runAsNonRoot: true
+    fsGroup: 1000
+  cluster:
+    dataServiceMemoryQuota: 1024
+    indexServiceMemoryQuota: 1024
+    searchServiceMemoryQuota: 1024
+    eventingServiceMemoryQuota: 1024
+    analyticsServiceMemoryQuota: 1024
+    indexStorageSetting: memory_optimized
+    autoFailoverTimeout: 5
+    autoFailoverMaxCount: 3
+    autoFailoverOnDataDiskIssues: true
+    autoFailoverOnDataDiskIssuesTimePeriod: 10
+    autoFailoverServerGroup: false
+  buckets:
+    - name: tweets
+      type: couchbase
+      memoryQuota: 256
+      replicas: 1
+      ioPriority: high
+      evictionPolicy: fullEviction
+      conflictResolution: seqno
+      enableFlush: true
+      enableIndexReplica: false
+  serverGroups:
+    - us-west-2a
+    - us-west-2b
+    - us-west-2c
+    - us-west-2d
+  servers:
+    - name: d-us-west-2a
+      size: 4
+      services:
+        - data
+      serverGroups:
+        - us-west-2a
+      pod:
+        volumeMounts:
+          default: us-west-2a
+          data:  us-west-2a
+    - name: d-us-west-2b
+      size: 4
+      services:
+        - data
+      serverGroups:
+        - us-west-2b
+      pod:
+        volumeMounts:
+          default: us-west-2b
+          data:  us-west-2b
+    - name: idx-us-west-2a
+      size: 1
+      services:
+        - index
+        - query
+      serverGroups:
+        - us-west-2a
+      pod:
+        volumeMounts:
+          default: us-west-2a
+          index: us-west-2a
+    - name: idx-us-west-2b
+      size: 1
+      services:
+        - index
+        - query
+      serverGroups:
+        - us-west-2b
+      pod:
+        volumeMounts:
+          default: us-west-2b
+          index: us-west-2b
+  volumeClaimTemplates:
+    - metadata:
+        name: us-west-2a
+      spec:
+        storageClassName: "us-west-2a"
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: us-west-2b
+      spec:
+        storageClassName: "us-west-2b"
+        resources:
+          requests:
+            storage: 5Gi
